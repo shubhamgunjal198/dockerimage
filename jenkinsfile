@@ -1,0 +1,25 @@
+pipeline{
+    agent any
+    tools{
+        maven 'mymvn'
+    }
+    stages{
+        stage('git clone') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/shubhamgunjal198/dockerimage.git'
+            }
+        }
+        stage('build image'){
+            steps{
+                sh 'docker build -t image1 -f dockerfile .'
+            }
+        }
+        stage('build container'){
+            steps{
+                sh ''' docker rm -f $(docker ps -aq)
+                docker run --name c001 -d -P image1'''
+            }
+        }
+    }
+}
